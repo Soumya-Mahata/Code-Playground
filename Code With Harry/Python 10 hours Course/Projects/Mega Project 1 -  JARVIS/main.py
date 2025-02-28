@@ -5,10 +5,39 @@ import pocketsphinx
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
+newsapi = "news_Api_key"
 
 def speak(text):
     engine.say(text)
     engine.runAndWait()
+
+def speak(text):
+    tts = gTTS(text)
+    tts.save("temp.mp3")
+    pygame.mixer.init()  # Initialize pygame mixer
+    pygame.mixer.music.load("temp.mp3")  # Load the MP3 file
+    pygame.mixer.music.play()  # Play the audio file
+    # Keep the program running so the music can play
+    while pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(10)  # Small delay to prevent excessive CPU usage
+    pygame.mixer.music.unload()  # Unload the file from the mixer
+    os.remove("temp.mp3")  # Remove the file after playing
+
+def aiprocess(command):
+    client = OpenAI(api_key="OpenAI_Api_Key",)
+
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a virtual assistant named Jarvis, skilled in general tasks like opening websites, playing music, and fetching news."},
+            {
+                "role": "user",
+                "content": command
+            }
+        ]
+    )
+
+    return (completion.choices[0].message['content'])
 
 def ProcesCommand(command):
     if "open google" in command.lower():
