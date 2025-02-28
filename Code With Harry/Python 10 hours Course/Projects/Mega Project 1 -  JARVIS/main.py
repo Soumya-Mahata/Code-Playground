@@ -2,12 +2,18 @@ import speech_recognition as sr
 import webbrowser
 import pyttsx3
 import pocketsphinx
+import musicLibrary
+import requests
+from openai import OpenAI
+from gtts import gTTS
+import pygame
+import os
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
 newsapi = "news_Api_key"
 
-def speak(text):
+def speak_old(text):
     engine.say(text)
     engine.runAndWait()
 
@@ -55,6 +61,36 @@ def ProcesCommand(command):
     elif "open gmail" in command.lower():
         speak("Opening Gmail")
         webbrowser.open("https://www.gmail.com")
+    elif "open ai" in command.lower():
+        speak("Opening ChatGPT")
+        webbrowser.open("https://chatgpt.com/")
+    elif command.lower().startswith("play"):
+        song = command[command.find(" ") + 1:].lower()
+        if song in musicLibrary.music:
+            speak("Playing " + song)
+            link = musicLibrary.music[song]
+            webbrowser.open(link)
+        else:
+            speak("Song not found")
+    elif "news" in command.lower():
+        speak("Here are the top news")
+        url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newsapi}"
+        response = requests.get(url)
+        # Checking if the request was successful. In HTTP, 200 means success.
+        if response.status_code == 200:
+            news = response.json()
+            # Extracting and displaying headlines
+            if "articles" in news:
+                for i, article in enumerate(news["articles"], 1):
+                    speak(f"{i}. {article['title']}")
+            else:
+                print("No articles found.")
+        else:
+            print(f"Error: Unable to fetch news (Status Code: {response.status_code})")
+    else:
+        # Let OpenAI handle the command
+        output = aiprocess(command)
+        speak(output)
 
 if __name__ == "__main__":
     speak("Initializing Jarvis...")
@@ -66,16 +102,17 @@ if __name__ == "__main__":
         try:
             with sr.Microphone() as source:
                 print("Listening...")
-                audio = r.listen(source, timeout = 3, phrase_time_limit = 5)
+                audio = r.listen(source, timeout=2, phrase_time_limit=2)
             word = r.recognize_google(audio)
             print(word)
-            if (word.lower() == "jarvis"):
+            if ("jarvis" in word.lower()):
                 speak("yeah!")
                 # Listen for command
                 with sr.Microphone() as source:
                     print("Jarvis Activated...")
                     audio = r.listen(source)
                     command = r.recognize_google(audio)
+                    print(f"Processing...{command}")
                     ProcesCommand(command)
 
         except Exception as e:
