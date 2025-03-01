@@ -74,7 +74,7 @@ def ProcesCommand(command):
             speak("Song not found")
     elif "news" in command.lower():
         speak("Here are the top news")
-        url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={newsapi}"
+        url = f"https://newsapi.org/v2/top-headlines?country=in&apiKey={newsapi}"
         response = requests.get(url)
         # Checking if the request was successful. In HTTP, 200 means success.
         if response.status_code == 200:
