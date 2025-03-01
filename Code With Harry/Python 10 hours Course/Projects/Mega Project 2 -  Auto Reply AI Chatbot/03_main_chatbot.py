@@ -25,7 +25,7 @@ while True:
 
     # Check if the last message is from the sender (not from SOUMYA)
     if "SOUMYA" not in chat_history.splitlines()[-1]:
-        '''# Use the chat history to generate the next chat message
+        # Use the chat history to generate the next chat message
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -37,8 +37,8 @@ while True:
             ]
         )
         response = completion.choices[0].message['content']
-        print(response)'''
-        response = "respond koris na"
+        print(response)
+        
         # Type the response in the chat box
         pyautogui.click(950, 950)  # Click on the chat box
         pyperclip.copy(response)  # Copy the response to the clipboard
