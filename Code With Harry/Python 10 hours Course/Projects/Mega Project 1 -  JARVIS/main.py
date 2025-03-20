@@ -9,12 +9,16 @@ from google import genai
 from gtts import gTTS
 import pygame
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+newsapi = "news_Api_key"
+chatgptapi = "OpenAI_Api_Key"
+geminiapi = os.getenv("Gemini_Api_Key")
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
-newsapi = "news_Api_key"
-chatgptapi = "OpenAI_Api_Key"
-geminiapi = "Gemini_Api_Key"
 
 def speak_old(text):
     engine.say(text)
