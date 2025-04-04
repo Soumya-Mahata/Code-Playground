@@ -2,8 +2,18 @@ import pyautogui
 import time
 import pyperclip
 from openai import OpenAI
+import os
+from dotenv import load_dotenv
 
-client = OpenAI(api_key="OpenAI_API_KEY",)
+load_dotenv()
+
+newsapi = "news_Api_key"
+chatgptapi = "OpenAI_Api_Key"
+geminiapi = os.getenv("Gemini_Api_Key")
+
+#client = OpenAI(api_key="chatgptai",)
+client = OpenAI(api_key="geminiai",)
+
 
 # Click on the Edge icon
 pyautogui.click(990, 1050)
@@ -26,17 +36,22 @@ while True:
     # Check if the last message is from the sender (not from SOUMYA)
     if "SOUMYA" not in chat_history.splitlines()[-1]:
         # Use the chat history to generate the next chat message
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a person named Soumya, who can speak Bengali, English and Hindi. He is from India and is a coder. You analyze the chat history and respond like Soumya. Output should be the next chat message as Soumya."},
-                {
-                    "role": "user",
-                    "content": chat_history
-                }
-            ]
+        # completion = client.chat.completions.create(
+        #     model="gpt-4o-mini",
+        #     messages=[
+        #         {"role": "system", "content": "You are a person named Soumya, who can speak Bengali, English and Hindi. He is from India and is a coder. You analyze the chat history and respond like Soumya. Output should be the next chat message as Soumya."},
+        #         {
+        #             "role": "user",
+        #             "content": chat_history
+        #         }
+        #     ]
+        # )
+        # response = completion.choices[0].message['content']
+        # print(response)
+        response = client.models.generate_content(
+        model="gemini-2.0-flash", contents="You are a person named Soumya, who can speak Bengali, English and Hindi. Soumya is from India and is a coder. You analyze the chat history and respond like Soumya. Output should be the next chat message as Soumya. The recent chat history is: " + chat_history
         )
-        response = completion.choices[0].message['content']
+        response = response.text
         print(response)
         
         # Type the response in the chat box
